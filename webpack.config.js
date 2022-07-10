@@ -1,26 +1,20 @@
 const path = require('path')
 
 module.exports = {
-    entry: ['babel-polyfill', './src/main.js'],
+    entry: ['./src/main.ts'],
     output: {
         path: path.resolve(__dirname, 'public/scripts'),
         filename: 'bundle.js'
     },
     module: {
         rules: [{
-            test : /\.js$/,
+            test : /\.ts$/,
             exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
-                options: {
-                    presets: ['env']
-                }
-            }
+            use: [{ loader: 'ts-loader' }]
         }]
     },
-    devServer: {
-        contentBase: path.resolve(__dirname, 'public/'),
-        publicPath: '/scripts/'
+    resolve: {
+        extensions: ['.ts', '.js']
     },
     devtool: 'source-map'
 }

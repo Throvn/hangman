@@ -1,31 +1,54 @@
+enum GameStatus {
+    Playing,
+    Finished,
+    Failed
+}
+
 class Hangman {
-    constructor(word, remainingGuesses) {
+    word: string[]
+    remainingGuesses: number
+    guessedLetters: string[]
+    status: GameStatus
+
+    constructor(word: string, remainingGuesses: number) {
         this.word = word.toLowerCase().split('')
         this.remainingGuesses = remainingGuesses
         this.guessedLetters = []
-        this.status = 'playing'
+        this.status = GameStatus.Playing
     }
-    calculateStatus() {
+
+    /**
+     * Calculates the status of the game.
+     */
+    calculateStatus(): void {
         const finished = this.word.every((letter) => this.guessedLetters.includes(letter) || letter === ' ')
 
         if (this.remainingGuesses === 0) {
-            this.status = 'failed'
+            this.status = GameStatus.Failed
         } else if (finished) {
-            this.status = 'finished'
+            this.status = GameStatus.Finished
         } else {
-            this.status = 'playing'
+            this.status = GameStatus.Playing
         }
     }
-    get statusMessage() {
-        if (this.status === 'playing') {
+
+    /**
+     * Returns the status message for the game.
+     */
+    get statusMessage(): string {
+        if (this.status === GameStatus.Playing) {
             return `Guesses left: ${this.remainingGuesses}`
-        } else if (this.status === 'failed') {
+        } else if (this.status === GameStatus.Failed) {
             return `Nice try! The word was "${this.word.join('')}".`
         } else {
             return 'Great work! You guessed the word.'
         }
     }
-    get puzzle() {
+
+    /**
+     * Returns the puzzle for the game.
+     */
+    get puzzle(): string {
         let puzzle = ''
 
         this.word.forEach((letter) => {
@@ -38,17 +61,19 @@ class Hangman {
 
         return puzzle
     }
-    makeGuess(guess) {
+
+    /**
+     * Updates the games state based on the given guess.
+     * @param guess The letter to guess.
+     */
+    makeGuess(guess: string): void {
         guess = guess.toLowerCase()
         const isUnique = !this.guessedLetters.includes(guess)
         const isBadGuess = !this.word.includes(guess)
 
-        if (this.status !== 'playing') {
-            return
-        }
+        if (this.status !== GameStatus.Playing) return
 
         if (isUnique) {
-            
             this.guessedLetters = [...this.guessedLetters, guess]
         }
 
@@ -59,4 +84,5 @@ class Hangman {
         this.calculateStatus()
     }
 }
+
 export { Hangman as default }
